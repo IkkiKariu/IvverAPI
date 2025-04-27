@@ -59,3 +59,56 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+## Запуск проекта
+
+### 1) Настроить конфигурацию проекта
+
+(находясь в корневой папке проекта)
+```
+cp .env.example .env
+```
+
+
+Задать значения следующим переменным окружения в файле .env:
+```
+DB_CONNECTION=pgsql
+DB_HOST=[POSTGRES_HOST]
+DB_PORT=[POSTGRES_PORT]
+DB_DATABASE=ivver_db
+DB_USERNAME=[POSTGRES_USER]
+DB_PASSWORD=[USER_PASSWORD]
+```
+
+### 2) Создать базу данных
+(psql)
+```
+create database ivver_db;
+```
+
+(в корневой папке проекта)
+```
+php artisan migrate --path=database\migrations\2025_04_25_191610_create_categories_table.php
+```
+```
+php artisan migrate --path=database\migrations\2025_04_25_185407_create_specifications_table.php
+```
+```
+php artisan migrate
+```
+
+### 3) Запустить dev сервер
+```
+php artisan serve
+```
+
+## Опционально
+
+### Применить миграции
+
+(в корневой папке проекта)
+```
+php artisan db:seed
+```
