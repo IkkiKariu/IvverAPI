@@ -24,7 +24,7 @@ class ProductService
 
     public function get(string $id): array
     {
-        $productModel = Product::find($id)->with('specifications:id,name,value,product_id')->with('category:id, name')->get();
+        $productModel = Product::where('id', $id)->with('specifications:id,name,value,product_id')->with('category:id,name')->first();
 
         return $productModel->toArray();
     }
@@ -33,9 +33,12 @@ class ProductService
     {
         $product = Product::create($productData);
 
-        foreach($productData['specifications'] as $specification)
+        if (key_exists('specifications', $productData))
         {
-            Specification::create(array_merge($specification, ['product_id' => $product->id]));
+            foreach($productData['specifications'] as $specification)
+            {
+                Specification::create(array_merge($specification, ['product_id' => $product->id]));
+            }
         }
     }
 }

@@ -17,4 +17,4 @@ Route::prefix('products')->group(function () {
 
 Route::get('/test', function (Request $request) {
     return $request->query('cat');
-}); 
+});
