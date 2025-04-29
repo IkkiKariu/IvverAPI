@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\ProductService;
+use App\Services\CategoryService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ProductService::class, function () {
             return new ProductService;
+        });
+        $this->app->bind(CategoryService::class, function () {
+            return new CategoryService;
         });
     }
 
