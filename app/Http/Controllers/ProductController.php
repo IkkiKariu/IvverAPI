@@ -55,7 +55,7 @@ class ProductController extends Controller
             'name' => ['required', 'max:128'],
             'description' => [],
             'price' => ['required', 'decimal:2'],
-            'measurement_unit_id' => ['required', 'uuid', 'exists:measurement_units,id'],
+            'measurement_unit_id' => ['uuid', 'exists:measurement_units,id'],
             'category_id' => ['required', 'uuid', 'exists:categories,id'],
             'specifications' => ['array'],
             'specifications.*.name' => ['required'],
@@ -81,8 +81,6 @@ class ProductController extends Controller
             return response()->json(data: $validator->errors(), status: 400);
         }
 
-        $this->productService->add($validator->validated());
-
-        return response(status: 204);   
+        return response()->json(data: $this->productService->add($validator->validated()), status: 201);   
     }
 }

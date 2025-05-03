@@ -29,7 +29,7 @@ class ProductService
         return $productModel->toArray();
     }
 
-    public function add(array $productData): void
+    public function add(array $productData): array
     {
         $product = Product::create($productData);
 
@@ -40,5 +40,7 @@ class ProductService
                 Specification::create(array_merge($specification, ['product_id' => $product->id]));
             }
         }
+
+        return $this->get($product->id);
     }
 }

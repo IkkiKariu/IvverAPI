@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price');
 
-            $table->uuid('measurement_unit_id');
+            $table->uuid('measurement_unit_id')->nullable();
             $table->foreign('measurement_unit_id')->references('id')->on('measurement_units');
 
             $table->uuid('category_id');
