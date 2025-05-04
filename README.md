@@ -93,7 +93,7 @@ create database ivver_db;
 php artisan migrate --path=database\migrations\2025_04_25_191610_create_categories_table.php
 ```
 ```
-php artisan migrate --path=database\migrations\2025_04_25_185407_create_specifications_table.php
+php artisan migrate --path=database\migrations\2025_04_27_120436_create_measurement_units_table.php
 ```
 ```
 php artisan migrate
