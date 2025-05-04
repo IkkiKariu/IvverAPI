@@ -6,9 +6,11 @@ use App\Models\Category;
 
 class CategoryService
 {
-    public function create(array $categoryData): void
+    public function create(array $categoryData): array
     {
-        Category::create($categoryData);
+        $categoryModel = Category::create($categoryData);
+
+        return $this->get($categoryModel->id);
     }
 
     public function all(): array

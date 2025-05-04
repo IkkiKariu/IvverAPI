@@ -43,17 +43,16 @@ class CategoryController extends Controller
         $payload = $request->json()->all();
 
         $validator = Validator::make($payload, [
-            'name' => ['required'],
+            'name' => ['required', 'max:64'],
             'description' => []
         ], [
-            'name.required' => 'Поле обязательно для заполнения'
+            'name.required' => 'Поле обязательно для заполнения',
+            'name.max' => 'Превышено максимально допустимое количество символов (64)'
         ]);
 
         if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
 
-        $this->categoryService->create($validator->validated());
-
-        return response(status: 204);
+        return response()->json(data: $this->categoryService->create($validator->validated()), status: 201);
     }
     
     public function update(Request $request, string $id)
@@ -62,11 +61,19 @@ class CategoryController extends Controller
 
         $validator = Validator::make(array_merge($payload, ['id' => $id]), [
             'id' => ['required', 'uuid', 'exists:categories,id'],
-            'name' => [],
+            'name' => ['max:64'],
             'description' => []
+        ], [
+            'name.max' => 'Превышено максимально допустимое количество символов (64)'
         ]);
 
-        if ($validator->fails()) { return response(status: 404); }
+        if ($validator->fails()) 
+        {
+            // REMEMBER: Сейчас будет костыль
+            $messageBag = $validator->errors();
+            
+            return $messageBag->hasAny('id') ? response(status: 404) : response()->json(data: $messageBag, status: 400);
+        }
 
         $updated = $this->categoryService->update(Category::find($id), $validator->validated());
         
