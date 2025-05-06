@@ -10,7 +10,7 @@ class ProductService
 {
     public function all(?string $categoryId=null): array
     {
-        $query = Product::with('measurement_unit:id,name')->select('id', 'name', 'price', 'category_id', 'measurement_unit_id');
+        $query = Product::with('measurement_unit:id,name')->with('category:id,name')->select('id', 'name', 'price', 'category_id', 'measurement_unit_id');
 
         if($categoryId)
         {

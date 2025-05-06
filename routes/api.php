@@ -46,6 +46,20 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('/test', function (Request $request) {
-    return $request->query('cat');
+Route::post('/test', function (Request $request) {
+
+    $productData = json_decode(json: $request->input("data"), associative: true);
+
+    if (is_null($productData))
+    {
+        return response()->json(status: 400);
+    }
+
+    // if ($request->hasFile('photos'))
+    // {
+    //     foreach ($request->file('photos') as $photo)
+    //     {
+    //         $path = Storage::putFileAs('product-photos', $photo);
+    //     }
+    // }
 });

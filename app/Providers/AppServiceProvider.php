@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\ProductService;
 use App\Services\CategoryService;
 use App\Services\MeasurementUnitService;
+use App\Services\ProductPhotoService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind(MeasurementUnitService::class, function () {
             return new MeasurementUnitService;
+        });
+        $this->app->bind(ProductPhotoService::class, function () {
+            return new ProductPhotoService;
         });
     }
 

@@ -5,16 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 use App\Services\ProductService;
+use App\Services\ProductPhotoService;
 
 class ProductController extends Controller
 {
     private ProductService $productService;
-    
-    public function __construct(ProductService $productService)
+    private ProductPhotoService $productPhotoService;
+
+    public function __construct(ProductService $productService, ProductPhotoService $productPhotoService)
     {
         $this->productService = $productService;
+        $this->productPhotoService = $productPhotoService;
     }
 
     public function index(Request $request)
@@ -49,9 +53,20 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $payload = $request->json()->all();
+        if ($request->missing(['data', 'preview-photo']) || $request->isNotFilled(['data', 'preview-photo']) || !$request->hasFile('preview-photo')) 
+        {
+            response(status: 400);
+        }
 
-        $validator = Validator::make($payload, [
+        $productData = json_decode(json: $request->input("data"), associative: true);
+
+        // Проверка не невалидный JSON
+        if (is_null($productData))
+        {
+            return response()->json(status: 400);
+        }
+
+        $validator = Validator::make($productData, [
             'name' => ['required', 'max:128'],
             'description' => [],
             'price' => ['required', 'decimal:2'],
@@ -81,6 +96,24 @@ class ProductController extends Controller
             return response()->json(data: $validator->errors(), status: 400);
         }
 
-        return response()->json(data: $this->productService->add($validator->validated()), status: 201);   
+        // Создание товара
+        $created = $this->productService->add($validator->validated());
+        
+        // Сохранение preview фото товара
+        $previewPhoto = $request->file('preview-photo');
+        $path = Storage::putFile('product-photos', $previewPhoto);
+        $this->productPhotoService->create(productId: $created['id'], path: $path, isPreview: true);
+
+        // Сохранение фото товара
+        if($request->hasFile('photos'))
+        {
+            foreach ($request->file('photos') as $photo)
+            {
+                $path = Storage::putFile('product-photos', $photo);
+                $this->productPhotoService->create(productId: $created['id'], path: $path, isPreview: false);
+            }
+        }
+
+        return response()->json(data: $created, status: 201);
     }
 }
