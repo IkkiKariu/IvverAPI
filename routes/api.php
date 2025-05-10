@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MeasurementUnitController;
+use App\Http\Controllers\ProductPhotoController;
 
 Route::get('/', function () {
     return response('Hello from API!');
@@ -30,7 +31,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/add', [ProductController::class, 'store']);
         Route::get('/show/{id}', [ProductController::class, 'show']);
-        Route::post('/photos/upload/{productId}', [ProductController::class, 'storeAllPhotos']);
+        Route::post('/photos/upload/{productId}', [ProductPhotoController::class, 'storeAll']);
+        Route::patch('/update/{id}', [ProductController::class, 'update']);
     });
     
     Route::prefix('categories')->group(function () {
@@ -45,22 +47,4 @@ Route::prefix('admin')->group(function () {
         Route::post('/add', [MeasurementUnitController::class, 'store']);
         Route::delete('/delete/{id}', [MeasurementUnitController::class, 'destroy']);
     });
-});
-
-Route::post('/test', function (Request $request) {
-
-    $productData = json_decode(json: $request->input("data"), associative: true);
-
-    if (is_null($productData))
-    {
-        return response()->json(status: 400);
-    }
-
-    // if ($request->hasFile('photos'))
-    // {
-    //     foreach ($request->file('photos') as $photo)
-    //     {
-    //         $path = Storage::putFileAs('product-photos', $photo);
-    //     }
-    // }
 });

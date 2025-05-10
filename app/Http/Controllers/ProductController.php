@@ -91,33 +91,29 @@ class ProductController extends Controller
         return response()->json(data: $created, status: 201);
     }
 
-    public function storeAllPhotos(Request $request, string $productId)
+    public function update(Request $request, string $id)
     {
-        $payload = $request->all();
+        $payload = $request->json()->all();
 
-        $validator = Validator::make(array_merge($payload, ['product_id' => $productId]), [
-            'product_id' => ['required', 'uuid', 'exists:products,id'],
-            'preview' => ['required', 'image', 'mimes:jpeg,png,jpg'],
-            'photos' => ['array'],
-            'photos.*' => ['image', 'mimes:jpeg,png,jpg']
+        $validator = Validator::make(array_merge($payload, ['id' => $id]), [
+            'id' => ['required', 'uuid', 'exists:products,id'],
+            'name' => ['max:128'],
+            'description' => [],
+            'price' => ['decimal:2'],
+            'measurement_unit_id' => ['uuid', 'exists:measurement_units,id'],
+            'category_id' => ['uuid', 'exists:categories,id'],
+            'specifications' => ['array'],
+            'specifications.*.name' => ['required'],
+            'specifications.*.value' => ['required']
         ]);
 
-        if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
-
-        // Cохранение preview фото продукта
-        $path = Storage::putFile('product-photos', $validator->validated()['preview']);
-        $this->productPhotoService->create($productId, $path, isPreview: true);
-
-        // Сохранение остальных фото продукта
-        if ($request->hasFile('photos'))
+        if ($validator->fails())
         {
-            foreach($request->file('photos') as $photo)
-            {
-                $path = Storage::putFile('product-photos', $photo);
-                $this->productPhotoService->create($productId, $path, isPreview: false);
-            }
+            return response()->json(data: $validator->errors(), status: 400);
         }
 
-        return response()->json(Storage::url($path));
+        $updated = $this->productService->update(productData: $validator->validated());
+
+        return response()->json(data: $updated, status: 200);
     }
 }

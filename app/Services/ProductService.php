@@ -46,9 +46,12 @@ class ProductService
         $productArray = $productModel->toArray();
 
         // Геренрация url для каждого фото продукта
-        foreach ($productArray['photos'] as &$photo)
+        if (!is_null($productArray['photos']))
         {
-            $photo['url'] = Storage::url($photo['path']);
+            foreach ($productArray['photos'] as &$photo)
+            {
+                $photo['url'] = Storage::url($photo['path']);
+            }
         }
 
         return $productArray;
@@ -67,5 +70,29 @@ class ProductService
         }
 
         return $this->get($product->id);
+    }
+
+    public function update(array $productData)
+    {
+        $productModel = Product::find($productData['id']);
+
+        $productModel->name = key_exists('name', $productData) && !is_null($productData['name']) ? $productData['name'] : $productModel->name;
+        $productModel->description = key_exists('description', $productData) ? $productData['description'] : $productModel->description;
+        $productModel->price = key_exists('price', $productData) && !is_null($productData['price']) ? $productData['price'] : $productModel->price;
+        $productModel->measurement_unit_id = key_exists('measurement_unit_id', $productData) ? $productData['measurement_unit_id'] : $productModel->measurement_unit_id;
+        $productModel->category_id = key_exists('category_id', $productData) && !is_null($productData['category_id']) ? $productData['category_id'] : $productModel->category_id;
+        $productModel->save();
+
+        // Обновление характеристик товара
+        Specification::where('product_id', $productData['id'])->delete();
+        if (key_exists('specifications', $productData))
+        {
+            foreach($productData['specifications'] as $specification)
+            {
+                Specification::create(array_merge($specification, ['product_id' => $productModel->id]));
+            }
+        }
+
+        return $this->get($productModel->id);
     }
 }
