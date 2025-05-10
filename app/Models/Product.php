@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Specification;
 use App\Models\Category;
 use App\Models\MeasurementUnit;
+use App\Models\ProductPhoto;
 
 class Product extends Model
 {
@@ -40,5 +41,10 @@ class Product extends Model
     public function measurement_unit(): BelongsTo
     {
         return $this->belongsTo(MeasurementUnit::class);
-    }     
+    }
+    
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ProductPhoto::class);
+    }
 }

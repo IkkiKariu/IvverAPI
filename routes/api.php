@@ -30,6 +30,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/add', [ProductController::class, 'store']);
         Route::get('/show/{id}', [ProductController::class, 'show']);
+        Route::post('/photos/upload/{productId}', [ProductController::class, 'storeAllPhotos']);
     });
     
     Route::prefix('categories')->group(function () {
