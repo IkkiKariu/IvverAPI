@@ -31,8 +31,11 @@ Route::prefix('admin')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/add', [ProductController::class, 'store']);
         Route::get('/show/{id}', [ProductController::class, 'show']);
-        Route::post('/photos/upload/{productId}', [ProductPhotoController::class, 'storeAll']);
         Route::patch('/update/{id}', [ProductController::class, 'update']);
+        Route::post('/photos/upload-all/{productId}', [ProductPhotoController::class, 'storeAll']);
+        Route::post('/photos/upload-preview/{productId}', [ProductPhotoController::class, 'storePreview']);
+        Route::post('/photos/upload/{productId}', [ProductPhotoController::class, 'store']);
+        Route::delete('/photos/delete', [ProductPhotoController::class, 'delete']);
     });
     
     Route::prefix('categories')->group(function () {
