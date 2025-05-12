@@ -31,7 +31,7 @@ class ProductService
                 'name' => $product->name,
                 'price' => $product->price,
                 'measurement_unit_id' => $product->measurement_unit_id,
-                'measurement_unit' => $product->measurement_unit->toArray(),
+                'measurement_unit' => $product->measurement_unit,
                 'category_id' => $product->category_id,
                 'category' => $product->category->toArray(),
                 'preview_photo_url' => $previewPhoto ? Storage::url($previewPhoto->path) : null
