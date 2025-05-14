@@ -109,7 +109,10 @@ class ProductController extends Controller
 
         if ($validator->fails())
         {
-            return response()->json(data: $validator->errors(), status: 400);
+            // REMEMBER: Сейчас будет костыль
+            $messageBag = $validator->errors();
+            
+            return $messageBag->hasAny('id') ? response()->json(status: 404) : response()->json(data: $messageBag, status: 400);
         }
 
         $updated = $this->productService->update(productData: $validator->validated());

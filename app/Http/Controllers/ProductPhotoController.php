@@ -29,8 +29,22 @@ class ProductPhotoController extends Controller
             'photos.*' => ['image', 'mimes:jpeg,png,jpg,webp']
         ]);
 
-        if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
+        if ($validator->fails()) 
+        {
+            // REMEMBER: Сейчас будет костыль
+            $messageBag = $validator->errors();
+            
+            return $messageBag->hasAny('product_id') ? response()->json(status: 404) : response()->json(data: $messageBag, status: 400);
+        }
 
+        // Удаление предыдцщего preview фото продукта, если оно существует
+        $currentPreview = $this->productPhotoService->getPreview($productId);
+        if ($currentPreview)
+        {
+            Storage::delete($currentPreview['path']);
+            $this->productPhotoService->deletePreview($productId);
+        }
+        
         // Cохранение preview фото продукта
         $path = Storage::putFile('product-photos', $validator->validated()['preview']);
         $this->productPhotoService->create($productId, $path, isPreview: true);
@@ -57,7 +71,13 @@ class ProductPhotoController extends Controller
             'preview' => ['required', 'image', 'mimes:jpeg,png,jpg,webp']
         ]);
 
-        if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
+        if ($validator->fails())
+        {
+            // REMEMBER: Сейчас будет костыль
+            $messageBag = $validator->errors();
+            
+            return $messageBag->hasAny('id') ? response()->json(status: 404) : response()->json(data: $messageBag, status: 400);
+        }
 
         // Удаление предыдцщего preview фото продукта, если оно существует
         $currentPreview = $this->productPhotoService->getPreview($productId);
@@ -84,7 +104,13 @@ class ProductPhotoController extends Controller
             'photos.*' => ['image', 'mimes:jpeg,png,jpg,webp']
         ]);
 
-        if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
+        if ($validator->fails())
+        {
+            // REMEMBER: Сейчас будет костыль
+            $messageBag = $validator->errors();
+            
+            return $messageBag->hasAny('id') ? response()->json(status: 404) : response()->json(data: $messageBag, status: 400);
+        }
 
         // Сохранение фото продукта
         if ($request->hasFile('photos'))
