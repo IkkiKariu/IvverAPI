@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
+use App\Models\PersonalAccessToken;
 use App\Services\ProductService;
 use App\Services\CategoryService;
 use App\Services\MeasurementUnitService;
 use App\Services\ProductPhotoService;
+use App\Services\AuthService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductPhotoService::class, function () {
             return new ProductPhotoService;
         });
+        $this->app->bind(AuthService::class, function () {
+            return new AuthService;
+        });
     }
 
     /**
@@ -35,6 +41,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }
