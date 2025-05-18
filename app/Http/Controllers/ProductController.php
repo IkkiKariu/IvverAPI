@@ -128,4 +128,17 @@ class ProductController extends Controller
 
         return response()->json(data: $updated, status: 200);
     }
+
+    public function delete(string $id)
+    {
+        $validator = Validator::make(['product_id' => $id], [
+            'product_id' => ['required', 'uuid', 'exists:products,id'] 
+        ]);
+
+        if ($validator->fails())  { return response()->json(data: $validator->errors(), status: 404); }
+
+        $this->productService->delete($validator->validated()['product_id']);
+
+        return response()->json(status: 200);
+    }
 }

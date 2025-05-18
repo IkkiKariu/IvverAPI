@@ -95,4 +95,16 @@ class ProductService
 
         return $this->get($productModel->id);
     }
+
+    public function delete(string $id)
+    {
+        $product = Product::where('id', $id)->with('photos:id,product_id,path')->first();
+
+        foreach ($product->photos as $photo)
+        {
+            Storage::delete($photo->path);
+        }
+
+        $product->delete();
+    }
 }
