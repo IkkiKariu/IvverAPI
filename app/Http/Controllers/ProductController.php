@@ -59,7 +59,7 @@ class ProductController extends Controller
             'name' => ['required', 'max:128'],
             'description' => [],
             'price' => ['required', 'decimal:2'],
-            'measurement_unit_id' => ['uuid', 'exists:measurement_units,id'],
+            'measurement_unit_id' => ['nullable', 'uuid', 'exists:measurement_units,id'],
             'category_id' => ['required', 'uuid', 'exists:categories,id'],
             'specifications' => ['array'],
             'specifications.*.name' => ['required'],
@@ -69,7 +69,6 @@ class ProductController extends Controller
             'name.max' => 'Превышено максимально допустимое количество символов (128)',
             'price.required' => 'Поле обязательно для заполнения',
             'price.decimal' => 'Значение должно быть десятичным числом с двумя разрядами в дробной части',
-            'measurement_unit_id.required' => 'Поле обязательно для заполнения',
             'measurement_unit_id.uuid' => 'Неверный фоомат идентификатора (UUID)',
             'measurement_unit_id.exists' => 'Единицы измерения с таким идентификатором не существует',
             'category_id.required' => 'Поле обязательно для заполнения',
@@ -105,6 +104,16 @@ class ProductController extends Controller
             'specifications' => ['array'],
             'specifications.*.name' => ['required'],
             'specifications.*.value' => ['required']
+        ], [
+            'name.max' => 'Превышено максимально допустимое количество символов (128)',
+            'price.decimal' => 'Значение должно быть десятичным числом с двумя разрядами в дробной части',
+            'measurement_unit_id.uuid' => 'Неверный фоомат идентификатора (UUID)',
+            'measurement_unit_id.exists' => 'Единицы измерения с таким идентификатором не существует',
+            'category_id.uuid' => 'Неверный формат идентификатора (UUID)',
+            'category_id.exists' => 'Категории с таким идентификатором не существует',
+            "specifications.array" => 'Значение должно быть массивом',
+            "specifications.*.name.required" => "Поле обязательно для заполнения",
+            "specifications.*.value.required" => "Поле обязательно для заполнения"
         ]);
 
         if ($validator->fails())

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -59,4 +60,16 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{id}/delete', [MeasurementUnitController::class, 'destroy']);
         });
     });
+});
+
+Route::post('test', function (Request $request) {
+    $payload = $request->json()->all();
+
+    $validator = Validator::make($payload, [
+        'price' => ['nullable', 'decimal:2']
+    ]);
+
+    if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
+
+    return response()->json(status: 200);
 });
