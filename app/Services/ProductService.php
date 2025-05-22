@@ -20,23 +20,16 @@ class ProductService
             $query->where('category_id', $categoryId);
         }
 
-        $productCollection = $query->get();
+        $productPaginator = $query->Paginate(3)->withQueryString();
+        $productArray = $productPaginator->toArray();
 
-        return $productCollection->map(function ($product) {
-            // Получение preview photo товара
-            $previewPhoto = ProductPhoto::where('product_id', $product->id)->where('is_preview', true)->first();
+        foreach ($productArray['data'] as &$product)
+        {
+            $previewPhoto = ProductPhoto::where('product_id', $product['id'])->where('is_preview', true)->first();
+            $product['preview_photo_url'] = $previewPhoto ? Storage::url($previewPhoto->path) : null;
+        }
 
-            return [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'measurement_unit_id' => $product->measurement_unit_id,
-                'measurement_unit' => $product->measurement_unit ? $product->measurement_unit->toArray() : $product->measurement_unit,
-                'category_id' => $product->category_id,
-                'category' => $product->category->toArray(),
-                'preview_photo_url' => $previewPhoto ? Storage::url($previewPhoto->path) : null
-            ];
-        })->toArray();
+        return $productArray;
     }
 
     public function get(string $id): array
