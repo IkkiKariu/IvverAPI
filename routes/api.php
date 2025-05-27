@@ -45,7 +45,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/photos/upload-all', [ProductPhotoController::class, 'storeAll']);
             Route::post('/{id}/photos/upload-preview', [ProductPhotoController::class, 'storePreview']);
             Route::post('/{id}/photos/upload', [ProductPhotoController::class, 'store']);
-            Route::delete('/photos/delete', [ProductPhotoController::class, 'delete']);
+            Route::delete('/photos/remove', [ProductPhotoController::class, 'delete']);
         });
 
         Route::prefix('categories')->group(function () {
