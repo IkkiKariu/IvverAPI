@@ -20,7 +20,7 @@ class ProductService
             $query->where('category_id', $categoryId);
         }
 
-        $productPaginator = $query->Paginate(3)->withQueryString();
+        $productPaginator = $query->Paginate(10)->withQueryString();
         $productArray = $productPaginator->toArray();
 
         foreach ($productArray['data'] as &$product)
