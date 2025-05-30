@@ -64,13 +64,17 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Запуск проекта
 
-### 1) Настроить конфигурацию проекта
+### 1) Подтянуть зависимости проекта
+```
+composer install
+```
+
+### 2) Настроить конфигурацию проекта
 
 (находясь в корневой папке проекта)
 ```
 cp .env.example .env
 ```
-
 
 Задать значения следующим переменным окружения в файле .env:
 ```
@@ -82,7 +86,7 @@ DB_USERNAME=[POSTGRES_USER]
 DB_PASSWORD=[USER_PASSWORD]
 ```
 
-### 2) Создать базу данных
+### 3) Создать базу данных
 (psql)
 ```
 create database ivver_db;
@@ -99,14 +103,19 @@ php artisan migrate --path=database\migrations\2025_04_27_120436_create_measurem
 php artisan migrate
 ```
 
-### 3) Запустить dev сервер
+### 4) Создать символьную сслыку на storage
+```
+php artisan storage:link
+```
+
+### 5) Запустить dev сервер
 ```
 php artisan serve
 ```
 
 ## Опционально
 
-### Применить миграции
+### Заполнить БД тестовыми данными
 
 (в корневой папке проекта)
 ```
