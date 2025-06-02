@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('measurement_unit_id')->references('id')->on('measurement_units');
 
             $table->uuid('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
             
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ class AuthService
         $user = User::where('login', $credentials['login'])->first();
         if (!Hash::check($credentials['password'], $user->password)) { return null; }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $token = $user->createToken('auth-token', ['*'], now()->addDays(3))->plainTextToken;
         
         return explode('|', $token)[1];
     }

@@ -79,4 +79,20 @@ class CategoryController extends Controller
         
         return response()->json(data: $updated, status: 200);
     }
+
+    public function delete(Request $request, string $id)
+    {
+        $validator = Validator::make(['category_id' => $id], [
+            'category_id' => ['required', 'uuid', 'exists:categories,id']
+        ]);
+
+        if ($validator->fails())
+    {
+            return response()->json(status: 200);
+        }
+
+        $this->categoryService->delete($validator->validated()['id']);
+
+        return response()->json(status: 200);
+    }
 }

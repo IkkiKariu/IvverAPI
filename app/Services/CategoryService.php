@@ -31,4 +31,9 @@ class CategoryService
 
         return $context->toArray();
     }
+
+    public function delete(string $id): void
+    {
+        Category::find($id)->delete();
+    }
 }

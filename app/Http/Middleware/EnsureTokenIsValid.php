@@ -18,7 +18,7 @@ class EnsureTokenIsValid
     public function handle(Request $request, Closure $next): Response
     {
         $token = $request->bearerToken();
-        if (!$token || !PersonalAccessToken::where('token', hash('sha256', $token))->first())
+        if (!$token || !PersonalAccessToken::where('token', hash('sha256', $token))->where('expires_at', '>', now())->first())
         {
             return response()->json(status: 401);
         }
