@@ -11,15 +11,13 @@ use App\Models\ProductPhoto;
 
 class ProductService
 {
-    public function all(?string $categoryId=null): array
+    public function all(?string $categoryId=null, ?string $nameSubstring): array
     {
         $query = Product::with('measurement_unit:id,name')->with('category:id,name')->select('id', 'name', 'price', 'category_id', 'measurement_unit_id');
 
-        if($categoryId)
-        {
-            $query->where('category_id', $categoryId);
-        }
-
+        if ($categoryId) { $query->where('category_id', $categoryId); }
+        if ($nameSubstring) { $query->where('name', 'ILIKE', "%{$nameSubstring}%"); }
+ 
         $productPaginator = $query->Paginate(10)->withQueryString();
         $productArray = $productPaginator->toArray();
 

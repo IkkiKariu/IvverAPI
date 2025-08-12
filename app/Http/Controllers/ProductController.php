@@ -5,25 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 use App\Services\ProductService;
-use App\Services\ProductPhotoService;
 
 class ProductController extends Controller
 {
     private ProductService $productService;
-    private ProductPhotoService $productPhotoService;
 
-    public function __construct(ProductService $productService, ProductPhotoService $productPhotoService)
+    public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
-        $this->productPhotoService = $productPhotoService;
     }
 
     public function index(Request $request)
     {
         $categoryId = $request->query('category');
+        $name = $request->query('name');
 
         if ($categoryId)
         {
@@ -37,7 +34,7 @@ class ProductController extends Controller
             if ($validator->fails()) { return response()->json(data: $validator->errors(), status: 400); }
         }
         
-        return response()->json(data: $this->productService->all(categoryId: $categoryId), status: 200);
+        return response()->json(data: $this->productService->all(categoryId: $categoryId, nameSubstring: $name), status: 200);
     }
 
     public function show(string $id)
